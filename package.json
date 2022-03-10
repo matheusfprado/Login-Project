@@ -13,6 +13,7 @@
     "@fortawesome/react-fontawesome": "^0.1.17",
     "@types/js-cookie": "^3.0.1",
     "firebase": "^8.8.0",
+    "firebase-cli": "^1.2.0",
     "firebase-tools": "^10.2.2",
     "js-cookie": "^3.0.1",
     "next": "^12.1.0",
