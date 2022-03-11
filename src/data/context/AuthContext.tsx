@@ -17,11 +17,16 @@ const AuthContext = createContext<AuthContexProps>({})
 
 async function usuarioNormalizado(usuarioFirebase: firebase.User ): Promise<Usuario>{
   const token = await usuarioFirebase.getIdToken()
+  // @ts-ignore: Object is possibly 'null'.
   return {
       uid:usuarioFirebase.uid,
       name:usuarioFirebase.displayName,
       email:usuarioFirebase.email,
       token,
+<<<<<<< HEAD
+=======
+      // @ts-ignore: Object is possibly 'null'.
+>>>>>>> b21f1aa67cd3e9c54f0a209a47ef041703ada314
       provedor:usuarioFirebase.providerData[0].providerId
   }
 }
