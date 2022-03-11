@@ -1,10 +1,16 @@
 {
-  "hosting":"login-project-3e0c4" ,
-    "public": "public",
+  "hosting": {
+    "public": "build",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+        {
+            "source": "**",
+            "destination": "/index.html"
+        }
     ]
-  
+  }
 }
