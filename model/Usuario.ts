@@ -1,4 +1,4 @@
-export default interface Usuario{
+export default interface Usuario {
     uid:string | null
     email:string | null
     name:string | null

@@ -16,6 +16,7 @@ export function Home() {
 // Aqui por exemplo estamos construindo a função 
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
+''
   
   const {login} = useAuth()
   const {loginGoogle} = useAuth()
@@ -75,7 +76,7 @@ export function Home() {
                      />
            </div>
             <div className='mt-6'>
-            <AuthInput 
+                    <AuthInput 
                     label="senha"
                     name='senha'
                     id='senha'

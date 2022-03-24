@@ -9,7 +9,7 @@ import { any } from 'prop-types'
 
 
 interface AuthContexProps{
-  usuario?: Usuario | null,
+  usuario?: Usuario | null ,
   carregando?:boolean,
   cadastrar?:(email:string, senha:string) =>Promise<void>
   login?:(email:string, senha:string) =>Promise<void>
@@ -45,12 +45,12 @@ function gerenciarCookie(logado: Boolean) {
 
 export function AuthProvider(props:any) {
     const [carregando, setCarregando] =useState(true)
-    const [usuario, setUsuario] = useState(null)
+    const [usuario, setUsuario] = useState<Usuario | null>(null)
      
     async function configurarSessao(usuarioFirebase:any) {
         if(usuarioFirebase?.email) {
             const usuario = await usuarioNormalizado(usuarioFirebase)
-            setUsuario(null)
+            setUsuario(usuario)
             gerenciarCookie(true)
             setCarregando(false)
             return usuario.email
