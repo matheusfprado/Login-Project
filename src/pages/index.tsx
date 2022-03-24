@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Google from '../assets/img/google.svg';
 import Paisagem from '../../src/assets/img/Paisagem.png';
 import Link from 'next/link';
 import AuthInput from '../../components/auth/AuthInput'
@@ -8,15 +9,16 @@ import useAuth from '../data/hooks/useAuth'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+
 //Function é a função que vamos fazer o que esta dentro ter uma ação
 export function Home() {
 // Const é uma variavel que usamos para construir a função 
 // Aqui por exemplo estamos construindo a função 
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
-
-  const {login} = useAuth()
   
+  const {login} = useAuth()
+  const {loginGoogle} = useAuth()
 // Aqui com o async na frente de function signfica que vamos ter uma função assincrona, podemos dizer que sao mutiplas execuçoes
   async function submeter() {
 // O try catch vem para dizer assim se login executar email e senha de 'login' ok 
@@ -25,6 +27,17 @@ export function Home() {
         if (login) {
 // E o await é responsavel em fazer as multiplas executações serem respeitadas uma de cada vez
           await login(email, senha)
+            toast.success('usuario logado com sucesso', {
+                  position: "top-right", 
+                  theme: 'dark',
+                  autoClose: 20,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: false,
+                  draggable: true,
+                  progress: undefined,
+                  
+                  });
         } 
 // Se houver algum erro me execute o erro 
     } catch(e) {
@@ -58,7 +71,8 @@ export function Home() {
                      value={email}
                      valorMudou={setEmail} 
                      type='email'
-                     obrigatorio />
+                     required
+                     />
            </div>
             <div className='mt-6'>
             <AuthInput 
@@ -68,9 +82,10 @@ export function Home() {
                     value={senha}
                     valorMudou={setSenha} 
                     type='password'
-                    obrigatorio/>
+                    />
           </div>
           </div>      
+              
           <div className="flex flex-col justify-center pt-14 -ml-52">
             <button className="w-52 h-10  bg-gray-600 hover:bg-gray-800 rounded-lg drop-shadow-2xl px-28 py-1">
               <Link href="/Cadastre">
@@ -87,6 +102,20 @@ export function Home() {
                   </a> 
                 </button>
               </div> 
+             
+              <div className='flex-col flex justify-center pt-40 -ml-56 '>
+              <button onClick={loginGoogle} className="w-52 h-10 px-28 py-1 " >
+                  <a className='font-normal -mt-2 -ml-10 text-xl font-sans flex justify-center whitespace-nowrap text-green-500 hover:text-red-500'>
+                   Acesse com Google
+                  </a> 
+                </button>
+              </div>
+         
+          </div>
+          <div>
+            <a className='flex pt-96 mt-40 xl:-ml-44'>
+            <Image src={Google.src} width={25} height={25}/>
+            </a>
           </div>
     </div>
   </div>
@@ -95,6 +124,4 @@ export function Home() {
 }
 export default Home;
 
-function exibirErro(arg0: any) {
-  throw new Error('Function not implemented.');
-}
+

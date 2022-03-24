@@ -8,13 +8,15 @@ import useAuth from '../data/hooks/useAuth';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export function Cadastre() {
-  const {cadastrar} = useAuth()
+
+
+
+export default function Cadastre() {
   
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   
-  
+  const {cadastrar} = useAuth()
 
   async function submeter() {
     try {
@@ -22,22 +24,23 @@ export function Cadastre() {
             await cadastrar(email, senha)
         } 
     } catch(e) {
-      toast.error('error: ao cadastrar', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        });
-    }
-}
+          toast.error('error: e-mail ou senha invalidos', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          });
+   } 
+ }
   return (
+    <>
+    <ToastContainer />
  <div className="flex lg:bg-gray-100  lg:w-screen lg:h-screen">
       <Image src={Paisagem2.src} alt='Paisagem' width={900} height={900} className="sm:hidden "/>
   <div className="flex px-4 md:-mt-20 xl:mt-0 lg:mt-0">
-  <ToastContainer/>
     <div className="flex box-border rounded-lg bg-gray-50 shadow-2xl shadow-gray-500/40 w-96 h-40 px-72 py-64 xl:mt-36 lg:mt-8 mt-52  ">
       <div className="-ml-20 -mt-40">
         <h1 className="text-black whitespace-nowrap font-extrabold text-xl font-sans ">Cadastre-se</h1>
@@ -51,7 +54,7 @@ export function Cadastre() {
                      value={email}
                      valorMudou={setEmail} 
                      type='email'
-                     obrigatorio />
+                     required />
            </div>
             <div className='mt-6'>
             <AuthInput 
@@ -61,7 +64,7 @@ export function Cadastre() {
                     value={senha}
                     valorMudou={setSenha} 
                     type='password'
-                    obrigatorio/>
+                    />
           </div>
           </div>
              <div className='flex flex-col  justify-center pt-20 -ml-52'>
@@ -82,11 +85,8 @@ export function Cadastre() {
           </div>
     </div>
   </div>
-</div> 
-  )
+</div>
+</>
+  ) 
 }
-export default Cadastre;
 
-function exibirErro(arg0: any) {
-  throw new Error('Function not implemented.');
-}
