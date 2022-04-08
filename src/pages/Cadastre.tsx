@@ -1,92 +1,160 @@
 import Image from 'next/image';
-import Paisagem2 from '../../src/assets/img/Paisagem2.png';
 import Link from 'next/link';
-import AuthInput from '../../components/auth/AuthInput';
+import Nerd from '../assets/img/banner.png'
+import { MailIcon } from '@heroicons/react/outline';
+import { LockClosedIcon } from '@heroicons/react/outline';
+import { UserIcon } from '@heroicons/react/outline';
+
 import { useState } from 'react';
 import useAuth from '../data/hooks/useAuth';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Input from '../components/Input';
+import { on } from 'events';
+
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from 'react-hook-form';
 
 
 
 
 export default function Cadastre() {
   
-  const [email, setEmail] = useState('')
-  const [senha, setSenha] = useState('')
-  
+  const [email, setEmail] = useState(null)
+  const [senha, setSenha] = useState(null)
+  const [Confirmsenha, ConfirmsetSenha] = useState('')
   const {cadastrar} = useAuth()
+  const [name, setName] = useState(null)
 
-  async function submeter() {
-    try {
-        if (cadastrar) {
-            await cadastrar(email, senha)
-        } 
-    } catch(e) {
-          toast.error('error: e-mail ou senha invalidos', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          });
-   } 
- }
-  return (
-    <>
+
+  const schema = Yup.object().shape({
+    email: Yup
+    .string()      
+    .email("Formato de email inválido")
+    .required("Campo Obrigatório"),
+    senha: Yup.string().required('campo obrigatório'),
+    confirm_password: Yup.string()
+     .oneOf([Yup.ref('senha'), null], 'senhas precisam ser iguais')
+  });
+
+  const yupOption = { resolver: yupResolver(schema)} 
+  const { register, handleSubmit, formState} = useForm(yupOption);
+  const {errors} = formState
+
+  
+ 
+  async function onSubmit(data: any) {
+    try{
+      if(cadastrar){
+        await cadastrar(data.email, data.senha)
+       }
+       toast.success('cadastrado com sucesso', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+}catch (error){
+      toast.error('error:error ao cadastrar', {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  });
+    }
+
+  }
+return (
+  <>
     <ToastContainer />
- <div className="flex lg:bg-gray-100  lg:w-screen lg:h-screen">
-      <Image src={Paisagem2.src} alt='Paisagem' width={900} height={900} className="sm:hidden "/>
-  <div className="flex px-4 md:-mt-20 xl:mt-0 lg:mt-0">
-    <div className="flex box-border rounded-lg bg-gray-50 shadow-2xl shadow-gray-500/40 w-96 h-40 px-72 py-64 xl:mt-36 lg:mt-8 mt-52  ">
-      <div className="-ml-20 -mt-40">
-        <h1 className="text-black whitespace-nowrap font-extrabold text-xl font-sans ">Cadastre-se</h1>
-      </div> 
-        <div className="flex flex-col justify-center -ml-36 -mt-20"> 
-           <div>
-            <AuthInput 
-                     label="email"
-                     name='email'
-                     id='email'
-                     value={email}
-                     valorMudou={setEmail} 
-                     type='email'
-                     required />
-           </div>
-            <div className='mt-6'>
-            <AuthInput 
-                    label="senha"
+    <div className="flex justify-center items-center ">
+    <div className='hidden md:flex lg:flex xl:flex'>
+      <Image src={Nerd.src} layout='fill' />
+   </div>
+   {/* mobile fundo */}
+   <div className='md:hidden fixed bg-gray-700 w-screen h-screen'></div>
+   {/* mobile fundo */}
+   <div className="flex relative justify-center items-center py-36">
+       <div className="flex items-center justify-center md:py-20 md:px-20 sm:py-20 sm:px-20 rounded-xl bg-orange-400">
+          <div className="items-center justify-center">
+            <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex justify-center items-center pt-4">
+                  <Input
+                  label= {<UserIcon className="w-5 h-5 text-orange-500"/>}
+                  name='name'
+                  id='name'
+                  placeholder="Name"
+                  register={register('name')}
+                  type='text'
+                  errors={errors}
+                  />
+          </div> 
+          <div className="flex justify-center items-center pt-4">
+                  <Input
+                  label= {<MailIcon className="w-5 h-5 text-orange-500"/>}
+                  name='email'
+                  id='email'
+                  placeholder="Email"
+                  register={register('email')}
+                  type='email'
+                  errors={errors}
+                  />
+                 </div> 
+                <div className="flex justify-center items-center pt-4">
+                   <Input 
+                    label={<LockClosedIcon className="w-5 h-5 text-orange-500" />}
                     name='senha'
                     id='senha'
-                    value={senha}
-                    valorMudou={setSenha} 
+                    register={register('senha')}
+                    placeholder="Senha"
                     type='password'
+                    errors={errors}
                     />
-          </div>
-          </div>
-             <div className='flex flex-col  justify-center pt-20 -ml-52'>
-                <button onClick={submeter}  className="w-52 h-10  bg-gray-600 hover:bg-gray-800 rounded-lg drop-shadow-2xl px-28 py-1 ">
-                  <a className='font-semibold text-xl font-sans flex justify-center text-gray-200'>
-                   Cadastar
-                  </a> 
-                </button>
-              </div> 
-             <div className="flex flex-col justify-center pt-32 -ml-56">
-          <button className="w-52 h-10  bg-gray-600 hover:bg-gray-800 rounded-lg drop-shadow-2xl px-28 py-1">
-              <Link href="/">
-                  <a className="font-semibold cursor-pointer text-xl font-sans flex justify-center whitespace-nowrap text-gray-200">
-                     Já sou cadastrado
-                  </a> 
-              </Link>
-          </button>      
-          </div>
-    </div>
-  </div>
-</div>
-</>
-  ) 
-}
+                 </div>
+                 <div className="flex justify-center items-center pt-4">
+                   <Input 
+                    label={<LockClosedIcon className="w-5 h-5 text-orange-500" />}
+                    name='confirm_password'
+                    id='confirm_password'
+                    placeholder="Confirmar senha"
+                    type='password'
+                    register={register('confirm_password')}
+                    errors={errors}
+                    />
+                 </div>
+                 <div className="pr-52 pt-6">
+                      <Link href="/">
+                          <a className="text-gray-700 hover:text-gray-100 underline">
+                          Já sou cadastrado
+                          </a> 
+                      </Link>
+                </div>      
+                  <div className="flex justify-center items-center  pt-4 ">
+                     <button type='submit' className="bg-gray-700 hover:bg-orange-600 w-96 h-10 px-6 py-2 rounded-lg text-white text-md font-semibold ">
+                        Cadastar
+                     </button>
+                   </div> 
+                 </form>
+               </div>
+               </div>
+         </div>
+     </div>
+  </>
+ ) 
+} 
 
+
+
+
+function isEmailValidator(value: string): boolean | Yup.ValidationError | Promise<boolean | Yup.ValidationError> {
+  throw new Error('Function not implemented.');
+}
+   

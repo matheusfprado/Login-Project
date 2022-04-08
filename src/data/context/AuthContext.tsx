@@ -3,7 +3,7 @@ import Usuario from '../../../model/Usuario'
 import firebase from '../../firebase/config'
 import Cookies from 'js-cookie'
 import Router  from 'next/router'
-import { any } from 'prop-types'
+
 
 
 
@@ -94,11 +94,11 @@ export function AuthProvider(props:any) {
     } 
  }
     
-    async function cadastrar(email: string, senha: string) {
+    async function cadastrar( email:string, senha:string) {
         try{
          setCarregando(true)
          const resp = await firebase.auth()
-          .createUserWithEmailAndPassword(email, senha)
+          .createUserWithEmailAndPassword( email, senha)
           await configurarSessao(resp.user)
           Router.push('/')
         } catch {

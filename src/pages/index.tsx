@@ -1,48 +1,55 @@
 import Image from 'next/image';
-import Google from '../assets/img/google.svg';
-import Paisagem from '../../src/assets/img/Paisagem.png';
 import Link from 'next/link';
-import AuthInput from '../../components/auth/AuthInput'
+import Nerd from '../assets/img/banner.png'
+import Google from '../assets/img/google.svg'
+import { MailIcon } from '@heroicons/react/outline';
+import { LockClosedIcon } from '@heroicons/react/outline';
+
+
 import { useState } from 'react';
 import useAuth from '../data/hooks/useAuth'
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Input from '../components/Input';
+
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from 'react-hook-form';
+
+
+
 
 
 //Function é a função que vamos fazer o que esta dentro ter uma ação
-export function Home() {
-// Const é uma variavel que usamos para construir a função 
-// Aqui por exemplo estamos construindo a função 
-  const [email, setEmail] = useState('')
-  const [senha, setSenha] = useState('')
-''
-  
+export default function Home() {
+  const [email, setEmail] = useState(null)
+  const [senha, setSenha] = useState(null)
+  const [name, setName] = useState(null)
+
   const {login} = useAuth()
   const {loginGoogle} = useAuth()
-// Aqui com o async na frente de function signfica que vamos ter uma função assincrona, podemos dizer que sao mutiplas execuçoes
-  async function submeter() {
-// O try catch vem para dizer assim se login executar email e senha de 'login' ok 
-    try {
-//Se if for login, execute email e senha 
-        if (login) {
-// E o await é responsavel em fazer as multiplas executações serem respeitadas uma de cada vez
-          await login(email, senha)
-            toast.success('usuario logado com sucesso', {
-                  position: "top-right", 
-                  theme: 'dark',
-                  autoClose: 20,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: false,
-                  draggable: true,
-                  progress: undefined,
-                  
-                  });
-        } 
-// Se houver algum erro me execute o erro 
-    } catch(e) {
-      toast.error('error: e-mail ou senha invalidos', {
+
+  const schema = Yup.object().shape({
+    email: Yup
+    .string()      
+    .email("Formato de email inválido")
+    .required("Campo Obrigatório"),
+    senha: Yup.string().required('campo obrigatório'),
+  });
+
+  const yupOption = { resolver: yupResolver(schema)} 
+  const { register, handleSubmit, formState} = useForm(yupOption);
+  const {errors} = formState
+
+  
+ 
+  async function onSubmit(data: any) {
+    try{
+      if(login){
+        await login(data.email, data.senha)
+       }
+       toast.success('Logado com Sucesso', {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -51,78 +58,83 @@ export function Home() {
         draggable: true,
         progress: undefined,
         });
+      }catch (error){
+      toast.error('Email ou Senha invalidos', {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  });
     }
-}
+
+  }
+
   return (
-  <>
-<ToastContainer />
-<div className="flex lg:bg-gray-100  lg:w-screen lg:h-screen">
-      <Image src={Paisagem.src} alt='Paisagem' width={900} height={900} className="sm:hidden "/>
-  <div className="flex px-4 md:-mt-20 xl:mt-0 lg:mt-0">
-    <div className="flex box-border rounded-lg bg-gray-50 shadow-2xl shadow-gray-500/40 w-96 h-40 px-72 py-64 xl:mt-36 lg:mt-8 mt-52  ">
-      <div className="-ml-20 -mt-40">
-        <h1 className="text-black whitespace-nowrap font-extrabold text-xl font-sans ">Faça Seu Login</h1>
-      </div> 
-      <div className="flex flex-col justify-center -ml-36 -mt-20"> 
-           <div>
-            <AuthInput 
-                     label="email"
-                     name='email'
-                     id='email'
-                     value={email}
-                     valorMudou={setEmail} 
-                     type='email'
-                     required
-                     />
-           </div>
-            <div className='mt-6'>
-                    <AuthInput 
-                    label="senha"
+<>
+    <ToastContainer />
+ <div className=" flex justify-center items-center">
+   <div className='hidden md:flex lg:flex xl:flex'>
+      <Image src={Nerd.src} layout='fill' />
+   </div>
+   {/* mobile fundo */}
+   <div className='md:hidden fixed bg-gray-700 w-screen h-screen'></div>
+   {/* mobile fundo */}
+      <div className="flex relative md:py-34 py-44">
+       <div className="flex items-center justify-center md:py-28 md:px-20 sm:py-20 sm:px-20 rounded-xl bg-orange-400 ">
+          <div className="items-center justify-center" >
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="flex justify-center items-center pt-4">
+                  <Input
+                  label={<MailIcon className="w-5 h-5 text-orange-500" />}
+                  name='email'
+                  id='email'
+                  placeholder="E-mail"
+                  register={register('email')}
+                  type='email' 
+                  errors={errors}
+                   />
+                 </div> 
+                <div className="flex justify-center items-center pt-10">
+                   <Input 
+                    label={<LockClosedIcon className="w-5 h-5 text-orange-500" />}
                     name='senha'
                     id='senha'
-                    value={senha}
-                    valorMudou={setSenha} 
-                    type='password'
+                    placeholder="Senha"
+                    register={register('senha')}
+                    type='password' 
+                    errors={errors}
                     />
-          </div>
-          </div>      
-              
-          <div className="flex flex-col justify-center pt-14 -ml-52">
-            <button className="w-52 h-10  bg-gray-600 hover:bg-gray-800 rounded-lg drop-shadow-2xl px-28 py-1">
-              <Link href="/Cadastre">
-                  <a className="font-semibold cursor-pointer text-xl font-sans flex justify-center whitespace-nowrap text-gray-200">
-                     Cadastre-se
-                  </a> 
-              </Link>
-            </button>  
-          </div>
-          <div className='flex flex-col  justify-center pt-28 -ml-56'>
-                <button onClick={submeter}  className="w-52 h-10  bg-gray-600 hover:bg-gray-800 rounded-lg drop-shadow-2xl px-28 py-1 ">
-                  <a className='font-semibold text-xl font-sans flex justify-center text-gray-200'>
-                  Login
-                  </a> 
-                </button>
-              </div> 
-             
-              <div className='flex-col flex justify-center pt-40 -ml-56 '>
-              <button onClick={loginGoogle} className="w-52 h-10 px-28 py-1 " >
-                  <a className='font-normal -mt-2 -ml-10 text-xl font-sans flex justify-center whitespace-nowrap text-green-500 hover:text-red-500'>
-                   Acesse com Google
-                  </a> 
-                </button>
-              </div>
-         
-          </div>
-          <div>
-            <a className='flex pt-96 mt-40 xl:-ml-44'>
-            <Image src={Google.src} width={25} height={25}/>
-            </a>
-          </div>
-    </div>
-  </div>
+                 </div>
+                 <div className="lg:pr-72 lg:pt-8 md:pt-8 ">
+                      <Link href="/Cadastre">
+                          <a className="text-gray-700 hover:text-gray-100 underline">
+                          Cadastre-se
+                          </a> 
+                      </Link>
+                </div>      
+                  <div className="flex justify-center items-center pt-4">
+                     <button type='submit' className="bg-gray-700 hover:bg-gray-600 w-96 h-10 rounded-lg text-gray-200 font-semibold text-xl ">
+                          Login
+                     </button>
+                   </div> 
+                 <div className="flex justify-center items-center pt-4">
+                     <button onClick={loginGoogle} className="bg-gray-800 hover:bg-gray-600 w-96 h-10  rounded-lg text-gray-200 font-normal text-xl " >
+                     <span className="absolute flex px-20 py-1">
+                     <Image src={Google.src} width={25} height={25}/>
+                     </span>
+                     Entrar com Google
+                     </button>
+                </div>
+                 </form>
+                </div>
+             </div>
+      </div>
+ </div>
 </>
   )
 }
-export default Home;
 
 
