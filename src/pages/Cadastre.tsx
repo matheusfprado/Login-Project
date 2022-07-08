@@ -139,7 +139,9 @@ return (
                 </div>      
                   <div className="flex justify-center items-center  pt-4 ">
                      <button type='submit' className="bg-gray-700 hover:bg-orange-600 w-96 h-10 px-6 py-2 rounded-lg text-white text-md font-semibold ">
-                        Cadastar
+                     <Link href="/">
+                       Cadastar
+                     </Link>
                      </button>
                    </div> 
                  </form>

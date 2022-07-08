@@ -6,8 +6,6 @@ import Router  from 'next/router'
 
 
 
-
-
 interface AuthContexProps{
   usuario?: Usuario | null ,
   carregando?:boolean,
